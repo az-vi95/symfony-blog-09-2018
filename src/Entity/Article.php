@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -19,11 +20,13 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le titre est obligatoire.")
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Le contenu est obligatoire.")
      */
     private $content;
 
@@ -36,6 +39,7 @@ class Article
      * @var Category
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(nullable=false)
+     * * @Assert\NotBlank(message="Veuillez sélectionner une catégorie.")
      */
     private $category;
 
@@ -45,6 +49,22 @@ class Article
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Assert\Image(maxSize="1M",
+     *     maxSizeMessage="Le fichier ne doit pas faire plus de 1Mo",
+     *      mimeTypesMessage="Le fichier doit etre une image"
+     *  mimeTypes=""
+     *
+     * )
+     */
+    private $image;
+
+    public function __construct()
+    {
+        $this->setPublicationDate(new \DateTime());
+    }
 
     public function getId(): ?int
     {
@@ -124,6 +144,27 @@ class Article
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     * @return Article
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+
+
 
 
 }
